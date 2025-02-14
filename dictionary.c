@@ -129,6 +129,7 @@ void insertWord(Dictionary *dictionary, int *dim) {
     int num = 0;
     printf("Quante parole vuoi inserire? \n");
     scanf("%d", &num);
+    getchar();
 
     if (*dim + num <= 100) {
         for (int i = 0; i < num; i++) {
@@ -137,18 +138,21 @@ void insertWord(Dictionary *dictionary, int *dim) {
             char synonyms[5][20] = {};
 
             printf("Inserire la parola numero[%d]: \n", i + 1);
-            scanf("%s" , word);
-            getchar();
+            fgets(word, sizeof(word), stdin);
+            word[strcspn(word, "\n")] = '\0';
 
             printf("Inserire la descrizione della parola[%s]: \n", word);
-            scanf("%[^\n]s" , description);
+            fgets(description, sizeof(description), stdin);
+            description[strcspn(description, "\n")] = '\0';
 
-             for (int j = 0; j < 5; j++) {
-                 printf("Inserire il sinonimo numero[%d] della parola[%s]: \n", j + 1 , word);
-                 scanf("%s" , synonyms[j]);
-             }
+            for (int j = 0; j < 5; j++) {
+                printf("Inserire il sinonimo numero[%d] della parola[%s]: \n", j + 1, word);
+                fgets(synonyms[j], sizeof(synonyms[j]), stdin);
+                synonyms[j][strcspn(synonyms[j], "\n")] = '\0';
+            }
 
-            if (check_equal_words(dictionary , dim ,word, description , synonyms) != 1) {
+
+            if (check_equal_words(dictionary, dim, word, description, synonyms) != 1) {
                 strcpy(dictionary[*dim].word, word);
                 strcpy(dictionary[*dim].description, description);
                 for (int k = 0; k < 5; k++) {
@@ -159,25 +163,23 @@ void insertWord(Dictionary *dictionary, int *dim) {
                 printFormat();
                 printf("Parola inserita con successo\n");
 
-
-                char choice_ord[2] = "";
-                printf("Vuoi ordinare il dizionario? [SI][NO] \n");
-                scanf("%s", choice_ord);
-                if (strcmp(choice_ord , "SI") == 0) {
-                    sortDictionary(dictionary , dim);
-                }
-                printFormat();
-
             } else {
                 printFormat();
                 printf("Parola gia' presente\n");
                 printFormat();
             }
         }
+        char choice_ord[2] = "";
+        printf("Vuoi ordinare il dizionario? [SI][NO] \n");
+        scanf("%s", choice_ord);
+        if (strcmp(choice_ord, "SI") == 0) {
+            sortDictionary(dictionary, dim);
+        }
+        printFormat();
     } else {
         printFormat();
         printf("Limite massimo raggiunto\n");
-        printf("Inserire al massimo [%d] parola/e \n" , 100 - *dim);
+        printf("Inserire al massimo [%d] parola/e \n", 100 - *dim);
         printFormat();
     }
 }
